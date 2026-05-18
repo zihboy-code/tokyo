@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>春日部防衛隊！東京大冒險 🧳</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playful & Cute Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        shinYellow: '#FFE100',
+                        shinBlue: '#2563EB',
+                        shinLightBlue: '#38BDF8',
+                        shinRed: '#EF4444',
+                        shinPink: '#F472B6',
+                        shinGreen: '#4ADE80',
+                        shinBg: '#FFFDF0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Fredoka', 'Noto Sans TC', 'sans-serif';
+            background-color: #FFE100;
+        }
+        /* 蠟筆小新風格：粗黑框與趣味陰影 */
+        .shin-border {
+            border: 4px solid #1E293B;
+        }
+        .shin-shadow {
+            box-shadow: 4px 4px 0px 0px #1E293B;
+        }
+        .shin-shadow-sm {
+            box-shadow: 2px 2px 0px 0px #1E293B;
+        }
+        .shin-btn-press:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #1E293B;
+        }
+        /* 隱藏滾動條 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0 md:p-4">
+
+    <!-- App 容器 (模擬手機尺寸) -->
+    <div class="w-full max-w-md h-[100vh] md:h-[850px] bg-shinBg flex flex-col shin-border md:rounded-3xl overflow-hidden relative shadow-[8px_8px_0px_0px_rgba(30,41,59,1)]">
+        
+        <!-- 頂部精美標題列 -->
+        <header class="bg-shinYellow p-4 border-b-4 border-slate-800 flex items-center justify-between sticky top-0 z-50">
+            <div class="flex items-center space-x-2">
+                <div class="bg-shinRed text-white p-2 rounded-full border-2 border-slate-800 w-10 h-10 flex items-center justify-center font-bold text-xl shin-shadow-sm">
+                    🍑
+                </div>
+                <div>
+                    <h1 class="text-xl font-black text-slate-800 tracking-wider">東京大冒險</h1>
+                    <p class="text-xs font-bold text-slate-700">TOKYO ADVENTURE 2026</p>
+                </div>
+            </div>
+            <div class="bg-shinLightBlue text-slate-800 text-xs font-bold px-3 py-1 rounded-full border-2 border-slate-800 shin-shadow-sm">
+                ✈️ TR855 / JX315
+            </div>
+        </header>
+
+        <!-- 主內容區域 -->
+        <main id="main-content" class="flex-1 overflow-y-auto p-4 pb-24 no-scrollbar">
+            <!-- 動態內容將由 JavaScript 渲染 -->
+        </main>
+
+        <!-- 底部導航列 -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-white border-t-4 border-slate-800 grid grid-cols-5 text-center font-black text-xs h-18 z-50">
+            <button onclick="switchTab('plan')" id="nav-plan" class="py-2 text-shinRed flex flex-col items-center justify-center border-r-2 border-slate-800 bg-shinYellow">
+                <i class="fa-solid fa-calendar-days text-xl mb-1"></i><span>PLAN</span>
+            </button>
+            <button onclick="switchTab('guide')" id="nav-guide" class="py-2 text-slate-600 flex flex-col items-center justify-center border-r-2 border-slate-800">
+                <i class="fa-solid fa-map-location-dot text-xl mb-1"></i><span>GUIDE</span>
+            </button>
+            <button onclick="switchTab('wallet')" id="nav-wallet" class="py-2 text-slate-600 flex flex-col items-center justify-center border-r-2 border-slate-800">
+                <i class="fa-solid fa-wallet text-xl mb-1"></i><span>WALLET</span>
+            </button>
+            <button onclick="switchTab('lists')" id="nav-lists" class="py-2 text-slate-600 flex flex-col items-center justify-center border-r-2 border-slate-800">
+                <i class="fa-solid fa-list-check text-xl mb-1"></i><span>LISTS</span>
+            </button>
+            <button onclick="switchTab('info')" id="nav-info" class="py-2 text-slate-600 flex flex-col items-center justify-center">
+                <i class="fa-solid fa-circle-info text-xl mb-1"></i><span>INFO</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- JavaScript 邏輯與內建資料 -->
+    <script>
+        // --- 旅遊內建資料集 ---
+        const tripData = {
+            hotel: {
+                name: "京成里士滿酒店東京錦糸町 (Keisei Richmond Hotel Tokyo Kinshicho)",
+                address: "Tokyo, Sumida City, Kotobashi, 3 Chome−2−7"
+            },
+            flights: [
+                { time: "06:45", code: "TR855 (去程)" },
+                { time: "16:00", code: "JX315 (回程)" }
+            ],
+            itinerary: {
+                1: {
+                    title: "桃園啟航 ➔ 錦糸町和牛與秋葉原朝聖",
+                    date: "7/6 (一)",
+                    items: [
+                        { time: "06:45 - 11:15", type: "flight", desc: "✈️ 桃園機場起飛，順利降落成田機場 (Narita Kūkō)。", highlight: true },
+                        { time: "11:15 - 13:30", type: "transport", desc: "🚉 出關後於成田機場搭乘 JR 總武線快速 (JR Sōbu-sen Kaisoku) ➔ 免轉車直達【錦糸町站 (Kinshichō-eki)】（約 80 分鐘）。出北口步行 5 分鐘至錦糸町里士滿酒店寄放行李。", maps: "Keisei Richmond Hotel Tokyo Kinshicho" },
+                        { time: "14:00 - 15:30", type: "food", desc: "🍽️ 直奔南口丸井百貨 7 樓【敘敘苑 錦糸町店 (Jojōen)】，享用黑毛和牛商業午餐，看晴空塔。", maps: "敘敘苑 錦糸町店", blog: "https://www.google.com/search?q=敘敘苑+錦糸町店+食記" },
+                        { time: "15:30 - 20:00", type: "shop", desc: "🛍️ 於【錦糸町站】搭乘 JR 總武線各站停車 (JR Sōbu-sen Kakueki-teisha) ➔ 3 站直達【秋葉原站 (Akihabara-eki)】（6 分鐘）。大肆採購模型與動漫週邊。", maps: "秋葉原無線電會館" },
+                        { time: "20:45 - 22:15", type: "food", desc: "🍽️ 回錦糸町，上 TERMINAL 百貨 (Terumina) 5 樓吃【根室花丸 錦糸町店 (Nemuro Hanamaru)】迴轉壽司。吃飽去 B1 超市買水果。", maps: "根室花丸 錦糸町店", blog: "https://www.google.com/search?q=根室花丸+錦糸町店+食記" }
+                    ]
+                },
+                2: {
+                    title: "豐洲 teamLab 光影展 ➔ 市場海鮮 ➔ 錦糸町大激購",
+                    date: "7/7 (二)",
+                    items: [
+                        { time: "08:45 - 09:30", type: "transport", desc: "🚌 【錦糸町站南口】公車總站 2 號站牌，搭乘「錦13」號公車 (Kin-jūsan gō basu) ➔ 約 30 分鐘直達【豐洲站 (Toyosu-eki)】。", maps: "錦糸町站南口 公車總站" },
+                        { time: "09:30 - 12:00", type: "spot", desc: "🎨 【teamLab Planets】（預約最早場次，赤腳走入夢幻光影水幕，乾淨鏡面地板）。", highlight: true, maps: "teamLab Planets TOKYO" },
+                        { time: "12:00 - 14:00", type: "food", desc: "🍣 步行 10 分鐘或搭百合海鷗號 (Yurikamome) 1 站到【豐洲市場站 (Toyosu-shijō-eki)】。吃「大和壽司」或「小田保炸大蝦」。", maps: "豐洲市場 大和壽司" },
+                        { time: "14:00 - 15:00", type: "transport", desc: "🚇 豐洲站搭地鐵有樂町線 ➔【月島站】轉大江戶線 ➔【清澄白河站】轉半藏門線 ➔ 回到【錦糸町站】。" },
+                        { time: "15:00 - 18:30", type: "shop", desc: "🛒 全力進攻飯店與車站間的【Arcakit 百貨 (Arukakitto)】。橫掃超大 UNIQLO、GU、巨大大創 (DAISO)。", maps: "Arcakit錦糸町" },
+                        { time: "18:30 - 20:30", type: "food", desc: "🍽️ Arcakit 10 樓美食街享用【大戶屋 (Ōtoya)】正宗日式定食，或【不二家餐廳】草莓聖代。", maps: "Arcakit" }
+                    ]
+                },
+                3: {
+                    title: "下町傳統與現代潮流（淺草雷門 ➔ 原宿表參道 ➔ 澀谷無敵夜景）",
+                    date: "7/8 (三)",
+                    items: [
+                        { time: "08:30 - 09:15", type: "transport", desc: "🚇 【錦糸町站】搭半藏門線 (Hanzōmon-sen) ➔【押上站】轉都營淺草線 ➔【淺草站 (Asakusa-eki)】。" },
+                        { time: "09:15 - 11:30", type: "spot", desc: "⛩️ 【淺草寺雷門】與仲見世通 (Nakamise-dōri) 老街散策。", maps: "淺草寺 雷門" },
+                        { time: "11:30 - 13:30", type: "food", desc: "🥩 【淺草今半 (Asakusa Imahan)】享用百年黑毛和牛壽喜燒午間限定套餐。", maps: "淺草今半 國際通本店", blog: "https://www.google.com/search?q=淺草今半+食記" },
+                        { time: "13:30 - 14:15", type: "transport", desc: "🚇 【淺草站】搭地鐵銀座線 ➔【上野站】轉 JR 山手線 (JR Yamanote-sen) ➔【原宿站 (Harajuku-eki)】。" },
+                        { time: "14:15 - 17:30", type: "shop", desc: "🛍️ 參拜【明治神宮】巨型鳥居，沿路逛【原宿竹下通】與【表參道】。", maps: "明治神宮" },
+                        { time: "17:30 - 21:00", type: "spot", desc: "🌃 抵達【澀谷 (Shibuya)】，逛澀谷 PARCO，並登上【SHIBUYA SKY】觀景台俯瞰十字路口夜景。", highlight: true, maps: "SHIBUYA SKY" },
+                        { time: "21:00 - 22:30", type: "food", desc: "🍔 澀谷 PARCO 地下街【極味屋 (Kiwamiya)】鐵板生和牛漢堡排。隨後搭半藏門線免轉車直達回【錦糸町站】（28 分鐘）。", maps: "極味屋 澀谷PARCO店" }
+                    ]
+                },
+                4: {
+                    title: "近郊度假：輕井澤新幹線一日遊 ➔ 錦糸町在地 A5 和牛大餐",
+                    date: "7/9 (四) [Pass D1]",
+                    items: [
+                        { time: "08:00 - 09:30", type: "transport", desc: "🚅 【錦糸町站】搭 JR 總武線快速 ➔【東京站 (Tōkyō-eki)】。轉乘北陸新幹線 (Hokuriku Shinkansen) 直達【輕井澤站 (Karuizawa-eki)】。", highlight: true, maps: "東京車站" },
+                        { time: "09:30 - 13:00", type: "spot", desc: "🚲 輕井澤租腳踏車悠遊雲場池、舊輕井澤銀座通。", maps: "雲場池" },
+                        { time: "13:00 - 14:30", type: "food", desc: "🥢 舊輕井澤【川上庵 (Kawakami-an)】招牌巨大炸蝦天婦羅與信州蕎麥麵。", maps: "川上庵 輕井澤" },
+                        { time: "14:30 - 17:30", type: "shop", desc: "🛍️ 前往【輕井澤王子 Outlet】享受在湖光山色中血拼的樂趣。", maps: "輕井澤王子購物廣場" },
+                        { time: "17:30 - 19:00", type: "transport", desc: "🚅 搭乘新幹線優雅返回東京站，再轉總武線快速回到錦糸町。" },
+                        { time: "19:30 - 21:30", type: "food", desc: "🔥 晚餐：【燒肉 三千里 錦糸町店 (Sanzenri)】。老字號親民價格大啖頂級 A5 和牛。", maps: "燒肉 三千里 錦糸町店" },
+                        { time: "21:30 - 23:00", type: "shop", desc: "🛒 錦糸町北口公園旁【Olinas 購物中心】B1 的 KASUMI 超市（24小時營業）大採購。", maps: "olinas Kinshicho" }
+                    ]
+                },
+                5: {
+                    title: "古都鎌倉江之島 ➔ 橫濱港灣纜車夜景",
+                    date: "7/10 (五) [Pass D2]",
+                    items: [
+                        { time: "08:00 - 09:10", type: "transport", desc: "🚊 【錦糸町站】搭 JR 總武線快速（往逗子/橫須賀方向） ➔ 免轉車直達【鎌倉站 (Kamakura-eki)】（65 分鐘）。", highlight: true },
+                        { time: "09:10 - 12:00", type: "spot", desc: "⛩️ 鎌倉小町通 (Komachi-dōri) 與鶴岡八幡宮 (Tsurugaoka Hachimangū) 散步。", maps: "鶴岡八幡宮" },
+                        { time: "12:00 - 14:30", type: "spot", desc: "🚃 搭乘江之電 (Enoden) 復古電車，朝聖「鎌倉高校前」灌籃高手平交道，漫步江之島海岸。", maps: "鎌倉高校前車站" },
+                        { time: "14:30 - 15:30", type: "food", desc: "🐟 【とびっちょ (Tobiccho)】享用滿到看不見醋飯的江之島名物「爆量魱仔魚丼 (Shirasudon)」。", maps: "魩仔魚問屋 とびっちょ 本店" },
+                        { time: "15:30 - 17:30", type: "transport", desc: "🚊 江之島搭至【藤澤站】轉 JR 東海道線 ➔【橫濱站】，移防【橫濱港未來21】。" },
+                        { time: "17:30 - 20:30", type: "spot", desc: "🎡 漫步紅磚倉庫，搭乘最新【橫濱空中纜車 (YOKOHAMA AIR CABIN)】欣賞炫彩夜景。", maps: "YOKOHAMA AIR CABIN" },
+                        { time: "20:30 - 22:00", type: "food", desc: "🥞 紅磚倉庫內【Bills (Biruzu)】世界第一鬆餅，或【吉村家】家系拉麵。後搭快速車回錦糸町。", maps: "Bills 橫濱紅磚倉庫" }
+                    ]
+                },
+                6: {
+                    title: "錦糸町百貨最後補貨 ➔ 傍晚一車直達移防成田站",
+                    date: "7/11 (六) [Pass D3]",
+                    items: [
+                        { time: "09:30 - 12:00", type: "shop", desc: "🛍️ Check-out 並寄放行李。進攻南口【丸井百貨 (MARUI)】與北口【Olinas 購物中心】買伴手禮。", maps: "丸井百貨 錦糸町店" },
+                        { time: "12:00 - 13:30", type: "food", desc: "🍣 在錦糸町南口【魚寅鮨 (Uotorazushi)】享用超厚實海鮮丼與握壽司。", maps: "魚寅 錦糸町店" },
+                        { time: "13:30 - 16:30", type: "spot", desc: "🧳 回飯店領行李，在房間或大廳做最後大打包，空間大超好塞！" },
+                        { time: "16:30 - 17:40", type: "transport", desc: "🚉 【錦糸町站】搭乘 JR 總武線快速（往成田機場/成田方向）➔ 直達【JR 成田站 (JR Narita-eki)】。入住成田站里士滿酒店。", highlight: true, maps: "Richmond Hotel Narita" },
+                        { time: "18:30 - 21:00", type: "food", desc: "🍢 車站旁【鳥馬鹿 (Toribaka)】享用現烤日式燒鳥配冰啤酒，體驗日本小鎮居酒屋宵夜。", maps: "鳥馬鹿" }
+                    ]
+                },
+                7: {
+                    title: "成田山江戶老街 ➔ 百年鰻魚飯 ➔ 成田機場 ➔ 溫暖的家",
+                    date: "7/12 (日)",
+                    items: [
+                        { time: "09:00 - 11:30", type: "spot", desc: "⛩️ 退房寄存行李，漫步【成田山新勝寺】與【成田山表參道】。欣賞江戶時代木造黑瓦建築。", maps: "成田山新勝寺" },
+                        { time: "11:30 - 13:00", type: "food", desc: "🍱 【川豐 鰻魚飯 (Kawatoyo)】在百年木造老屋內品嚐現殺現烤、肉質肥美的頂級鰻魚飯。", highlight: true, maps: "川豐 本店", blog: "https://www.google.com/search?q=川豐+鰻魚飯+食記" },
+                        { time: "13:00 - 13:30", type: "transport", desc: "🚉 拉行李至【JR 成田站】搭乘電車 ➔ 15 分鐘直達【成田機場 (Narita Kūkō)】。" },
+                        { time: "13:30 - 16:00", type: "airport", desc: "🛂 抵達機場辦理登機與最後免稅店巡禮。" },
+                        { time: "16:00 - 18:45", type: "flight", desc: "✈️ 返航：成田機場起飛，順利降落台中清泉崗機場，回到溫暖的家。", highlight: true }
+                    ]
+                }
+            },
+            defaultChecklist: [
+                "護照", "外幣", "台幣", "美金", "信用卡", "原子筆", "飯店證明", "sim卡", "手機", "耳機", 
+                "行動電源（記得用夾鏈袋裝起來）", "充電器", "衛生紙", "濕紙巾", "口罩", "衛生棉", 
+                "護手霜", "水壺", "暈車藥", "備用藥（第一天夠吃即可）", "墨鏡", "薄外套", "絲巾", 
+                "圍巾", "補妝用品", "遮陽帽", "行李秤"
+            ]
+        };
+
+        // --- App 狀態管理 ---
+        let currentTab = 'plan';
+        let selectedDay = 1;
+        let expenses = JSON.parse(localStorage.getItem('shin_expenses')) || [];
+        let exchangeRate = localStorage.getItem('shin_rate') || 0.215;
+        let checklist = JSON.parse(localStorage.getItem('shin_checklist')) || tripData.defaultChecklist.map(item => ({ text: item, done: false }));
+        let memoText = localStorage.getItem('shin_memo') || "";
+
+        // --- 初始化頁面 ---
+        window.onload = function() {
+            switchTab('plan');
+        };
+
+        // --- 切換分頁核心邏輯 ---
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // 更新底部導航樣式
+            const tabs = ['plan', 'guide', 'wallet', 'lists', 'info'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    btn.classList.add('bg-shinYellow', 'text-shinRed');
+                    btn.classList.remove('text-slate-600');
+                } else {
+                    btn.classList.remove('bg-shinYellow', 'text-shinRed');
+                    btn.classList.add('text-slate-600');
+                }
+            });
+
+            // 渲染對應內容
+            const container = document.getElementById('main-content');
+            if (tabName === 'plan') renderPlan(container);
+            if (tabName === 'guide') renderGuide(container);
+            if (tabName === 'wallet') renderWallet(container);
+            if (tabName === 'lists') renderLists(container);
+            if (tabName === 'info') renderInfo(container);
+            
+            // 切換時回到頂部
+            container.scrollTop = 0;
+        }
+
+        // ==========================================
+        // 1. PLAN (行程表分頁)
+        // ==========================================
+        function renderPlan(el) {
+            let html = `
+                <!-- 日期選擇滑動列 -->
+                <div class="flex space-x-2 overflow-x-auto pb-3 mb-4 no-scrollbar">
+            `;
+            for (let i = 1; i <= 7; i++) {
+                const activeClass = selectedDay === i ? 'bg-shinRed text-white' : 'bg-white text-slate-800';
+                html += `
+                    <button onclick="selectedDay=${i}; renderPlan(document.getElementById('main-content'))" 
+                            class="shin-border shin-shadow-sm px-4 py-2 rounded-xl font-black text-sm whitespace-nowrap transition-all ${activeClass} shin-btn-press">
+                        D${i} (${tripData.itinerary[i].date})
+                    </button>
+                `;
+            }
+            html += `</div>`;
+
+            // 當天標題卡片
+            const dayInfo = tripData.itinerary[selectedDay];
+            html += `
+                <div class="bg-shinLightBlue p-4 rounded-2xl shin-border shin-shadow mb-4">
+                    <h2 class="text-lg font-black text-slate-900 flex items-center">
+                        <span class="bg-white px-2 py-0.5 rounded-md shin-border text-xs mr-2">DAY ${selectedDay}</span>
+                        ${dayInfo.title}
+                    </h2>
+                </div>
+                <div class="relative border-l-4 border-dashed border-slate-700 ml-4 pl-4 space-y-5">
+            `;
+
+            // 時間軸行程卡片
+            dayInfo.items.forEach(item => {
+                const highlightClass = item.highlight ? 'border-shinRed bg-red-50' : 'border-slate-800 bg-white';
+                const badgeColor = item.highlight ? 'bg-shinRed text-white' : 'bg-slate-800 text-white';
+                
+                html += `
+                    <div class="relative">
+                        <!-- 時間軸圓點 -->
+                        <div class="absolute -left-[26px] top-1 w-4 h-4 rounded-full bg-slate-800 border-2 border-white"></div>
+                        
+                        <!-- 行程主要卡片 -->
+                        <div class="p-3 rounded-xl border-2 shin-shadow-sm ${highlightClass}">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-black px-2 py-0.5 rounded ${badgeColor}">${item.time}</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-800 leading-relaxed mb-2">${item.desc}</p>
+                            
+                            <div class="flex space-x-2">
+                `;
+                if (item.maps) {
+                    html += `
+                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.maps)}" target="_blank" 
+                           class="text-xs bg-shinYellow font-black px-2 py-1 rounded-md border-2 border-slate-800 shin-shadow-sm flex items-center space-x-1 hover:bg-yellow-200">
+                            <i class="fa-solid fa-location-dot"></i> <span>Google 地圖</span>
+                        </a>
+                    `;
+                }
+                if (item.blog) {
+                    html += `
+                        <a href="${item.blog}" target="_blank" 
+                           class="text-xs bg-shinPink text-white font-black px-2 py-1 rounded-md border-2 border-slate-800 shin-shadow-sm flex items-center space-x-1 hover:bg-pink-400">
+                            <i class="fa-solid fa-utensils"></i> <span>看食記</span>
+                        </a>
+                    `;
+                }
+                html += `</div></div></div>`;
+            });
+
+            html += `</div>`;
+            el.innerHTML = html;
+        }
+
+        // ==========================================
+        // 2. GUIDE (深度導覽分頁)
+        // ==========================================
+        function renderGuide(el) {
+            el.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-shinPink text-white p-3 rounded-xl shin-border shin-shadow font-black text-center text-lg tracking-wider">
+                        🎒 春日部特派員深度備忘錄
+                    </div>
+
+                    <!-- 景點 1 -->
+                    <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                        <h3 class="text-md font-black text-slate-900 border-b-2 border-slate-800 pb-1 mb-2">🎨 teamLab Planets (豐洲)</h3>
+                        <p class="text-xs font-bold text-slate-600 bg-yellow-100 p-2 rounded-lg mb-2">
+                            💡 小新冷知識：這是一個全感官的「赤腳」沉浸式展覽！建議穿著方便穿脫的鞋子，且部分地板為鏡面設計，穿裙子的話記得搭配安全褲哦！
+                        </p>
+                        <div class="w-full h-40 rounded-xl overflow-hidden shin-border mb-2">
+                            <iframe width="100%" height="100%" src="https://www.openstreetmap.org/export/embed.html?bbox=139.785%2C35.647%2C139.795%2C35.653&amp;layer=mapnik" style="border: none"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- 景點 2 -->
+                    <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                        <h3 class="text-md font-black text-slate-900 border-b-2 border-slate-800 pb-1 mb-2">⛩️ 淺草寺與雷門 (Asakusa Sensō-ji)</h3>
+                        <p class="text-xs font-bold text-slate-600 mb-2 leading-relaxed">
+                            創建於公元 628 年，是東京最古老的寺廟。正門懸掛的巨大紅燈籠是知名地標。仲見世通則有各種百年傳統點心（如人形燒）。午餐規劃的「淺草今半」更是自 1895 年創立的黑毛和牛壽喜燒元祖！
+                        </p>
+                    </div>
+
+                    <!-- 景點 3 -->
+                    <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                        <h3 class="text-md font-black text-slate-900 border-b-2 border-slate-800 pb-1 mb-2">🚲 輕井澤度假勝地 (Karuizawa)</h3>
+                        <p class="text-xs font-bold text-slate-600 mb-2 leading-relaxed">
+                            位於長野縣的高原避暑勝地，搭乘北陸新幹線只需 1 小時。舊輕井澤銀座通帶有濃厚的歐式風情，著名的川上庵蕎麥麵與巨大的炸蝦絕對是不容錯過的排隊美食。
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 3. WALLET (記帳與匯率分頁)
+        // ==========================================
+        let calcInput = "";
+        let currentBase64Image = "";
+
+        function renderWallet(el) {
+            let totalJPY = expenses.reduce((sum, item) => sum + Number(item.jpy), 0);
+            let totalTWD = Math.round(totalJPY * exchangeRate);
+
+            let html = `
+                <!-- 匯率與總覽卡片 -->
+                <div class="bg-white p-4 rounded-2xl shin-border shin-shadow mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-black text-slate-800">自訂匯率 (台幣/日幣)</span>
+                        <input type="number" id="ex-rate" value="${exchangeRate}" step="0.001" onchange="updateRate(this.value)" 
+                               class="w-20 text-center font-bold border-2 border-slate-800 rounded bg-shinYellow text-sm py-0.5">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-center border-t-2 border-slate-800 pt-2">
+                        <div class="bg-red-50 p-2 rounded-xl border-2 border-slate-800">
+                            <div class="text-xs text-slate-500 font-bold">總花費 (日幣)</div>
+                            <div class="text-lg font-black text-shinRed">¥ ${totalJPY.toLocaleString()}</div>
+                        </div>
+                        <div class="bg-blue-50 p-2 rounded-xl border-2 border-slate-800">
+                            <div class="text-xs text-slate-500 font-bold">折合台幣</div>
+                            <div class="text-lg font-black text-shinBlue">NT$ ${totalTWD.toLocaleString()}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 計算機與輸入表單 -->
+                <div class="bg-white p-4 rounded-2xl shin-border shin-shadow mb-4">
+                    <h3 class="font-black text-slate-800 mb-2 text-sm"><i class="fa-solid fa-calculator"></i> 小新計算機與快速記帳</h3>
+                    
+                    <!-- 計算機顯示幕 -->
+                    <div id="calc-screen" class="bg-slate-100 p-2 rounded-lg text-right font-mono font-bold text-lg border-2 border-slate-800 min-h-[40px] mb-2 text-slate-700">
+                        ${calcInput || '0'}
+                    </div>
+
+                    <!-- 計算機按鍵 -->
+                    <div class="grid grid-cols-4 gap-1 mb-3">
+                        ${['7','8','9','/','4','5','6','*','1','2','3','-','0','.','+','C'].map(btn => {
+                            let btnBg = 'bg-slate-200';
+                            if (['/','*','-','+'].includes(btn)) btnBg = 'bg-shinLightBlue text-white';
+                            if (btn === 'C') btnBg = 'bg-shinRed text-white';
+                            return `<button onclick="handleCalc('${btn}')" class="${btnBg} border-2 border-slate-800 rounded-lg p-1.5 font-black text-xs shin-shadow-sm shin-btn-press">${btn}</button>`;
+                        }).join('')}
+                        <button onclick="handleCalc('=')" class="col-span-4 bg-shinYellow border-2 border-slate-800 rounded-lg p-1.5 font-black text-xs shin-shadow-sm shin-btn-press">=</button>
+                    </div>
+
+                    <!-- 記帳表單欄位 -->
+                    <div class="space-y-2 border-t-2 border-slate-200 pt-3">
+                        <input type="text" id="exp-title" placeholder="品項（如：敘敘苑午餐）" class="w-full p-2 text-xs font-bold border-2 border-slate-800 rounded-lg">
+                        <div class="flex space-x-2">
+                            <input type="number" id="exp-jpy" placeholder="日幣金額" class="w-1/2 p-2 text-xs font-bold border-2 border-slate-800 rounded-lg">
+                            
+                            <!-- 拍照上傳 -->
+                            <label class="w-1/2 bg-slate-800 text-white p-2 rounded-lg font-black text-xs flex items-center justify-center space-x-1 cursor-pointer border-2 border-slate-800 shin-shadow-sm active:translate-y-0.5">
+                                <i class="fa-solid fa-camera"></i> <span id="upload-status">收據拍照</span>
+                                <input type="file" accept="image/*" capture="environment" onchange="processImage(event)" class="hidden">
+                            </label>
+                        </div>
+                        <button onclick="addExpense()" class="w-full bg-shinGreen border-2 border-slate-800 rounded-xl py-2 font-black text-sm text-slate-800 shin-shadow-sm shin-btn-press">
+                            ＋ 記錄這筆花費
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 記帳歷史清單 -->
+                <div class="bg-white p-3 rounded-2xl shin-border shin-shadow">
+                    <h3 class="font-black text-slate-800 mb-2 text-sm"><i class="fa-solid fa-receipt"></i> 歷史記帳明細</h3>
+                    <div class="space-y-2 max-h-60 overflow-y-auto no-scrollbar">
+            `;
+
+            if (expenses.length === 0) {
+                html += `<p class="text-xs font-bold text-slate-400 text-center py-4">目前還沒有記帳紀錄喔！</p>`;
+            } else {
+                expenses.forEach((item, index) => {
+                    let twd = Math.round(item.jpy * exchangeRate);
+                    html += `
+                        <div class="flex items-center justify-between p-2 border-2 border-slate-800 rounded-xl bg-slate-50">
+                            <div class="flex items-center space-x-2">
+                                ${item.img ? `<img src="${item.img}" class="w-10 h-10 object-cover rounded border-2 border-slate-800">` : `<div class="w-10 h-10 bg-slate-200 border-2 border-slate-800 rounded flex items-center justify-center text-xs">🛍️</div>`}
+                                <div>
+                                    <div class="text-xs font-black text-slate-800">${item.title}</div>
+                                    <div class="text-[10px] font-bold text-slate-500">${item.date}</div>
+                                </div>
+                            </div>
+                            <div class="text-right flex items-center space-x-2">
+                                <div>
+                                    <div class="text-xs font-black text-shinRed">¥ ${Number(item.jpy).toLocaleString()}</div>
+                                    <div class="text-[10px] font-bold text-slate-500">NT$ ${twd}</div>
+                                </div>
+                                <button onclick="deleteExpense(${index})" class="text-slate-400 hover:text-shinRed p-1"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `</div></div>`;
+            el.innerHTML = html;
+        }
+
+        // --- 計算機與記帳邏輯群 ---
+        function handleCalc(val) {
+            const screen = document.getElementById('calc-screen');
+            if (val === 'C') {
+                calcInput = "";
+            } else if (val === '=') {
+                try {
+                    // 安全過濾，只允許數學運算字元
+                    let sanitized = calcInput.replace(/[^0-9+\-*/().]/g, '');
+                    let res = new Function(`return ${sanitized}`)();
+                    calcInput = String(Math.round(res * 100) / 100);
+                    document.getElementById('exp-jpy').value = calcInput; // 直接將結果帶入日幣欄位
+                } catch(e) {
+                    calcInput = "Error";
+                }
+            } else {
+                if (calcInput === "Error") calcInput = "";
+                calcInput += val;
+            }
+            screen.innerText = calcInput || '0';
+        }
+
+        function updateRate(val) {
+            exchangeRate = Number(val);
+            localStorage.setItem('shin_rate', exchangeRate);
+            renderWallet(document.getElementById('main-content'));
+        }
+
+        // 使用 Canvas 壓縮圖片，避免 LocalStorage 容量爆炸 (限制為 150px 縮圖)
+        function processImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            document.getElementById('upload-status').innerText = "壓縮中...";
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const max_size = 150; 
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > max_size) { height *= max_size / width; width = max_size; }
+                    } else {
+                        if (height > max_size) { width *= max_size / height; height = max_size; }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    currentBase64Image = canvas.toDataURL('image/jpeg', 0.6); // 壓縮品質 0.6
+                    document.getElementById('upload-status').innerText = "✅ 成功";
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function addExpense() {
+            const title = document.getElementById('exp-title').value.trim();
+            const jpy = document.getElementById('exp-jpy').value.trim();
+            
+            if (!title || !jpy) {
+                alert("動感光波！請填寫品項名稱與金額喔！");
+                return;
+            }
+
+            let now = new Date();
+            let dateStr = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            expenses.unshift({
+                title: title,
+                jpy: Number(jpy),
+                img: currentBase64Image,
+                date: dateStr
+            });
+
+            localStorage.setItem('shin_expenses', JSON.stringify(expenses));
+            currentBase64Image = ""; // 清空
+            calcInput = "";
+            renderWallet(document.getElementById('main-content'));
+        }
+
+        function deleteExpense(index) {
+            expenses.splice(index, 1);
+            localStorage.setItem('shin_expenses', JSON.stringify(expenses));
+            renderWallet(document.getElementById('main-content'));
+        }
+
+        // ==========================================
+        // 4. LISTS (清單與個人備忘錄分頁)
+        // ==========================================
+        function renderLists(el) {
+            let html = `
+                <!-- 行前行李檢查清單 -->
+                <div class="bg-white p-4 rounded-2xl shin-border shin-shadow mb-4">
+                    <h3 class="font-black text-slate-800 mb-3 text-sm flex items-center justify-between">
+                        <span><i class="fa-solid fa-suitcase-rolling text-shinPink"></i> 行前準備 CheckList</span>
+                        <span class="text-xs bg-slate-200 px-2 py-0.5 rounded-full">${checklist.filter(c=>c.done).length}/${checklist.length}</span>
+                    </h3>
+                    <div class="space-y-2 max-h-60 overflow-y-auto no-scrollbar border-b-2 border-slate-100 pb-3">
+            `;
+
+            checklist.forEach((item, index) => {
+                const checkedAttr = item.done ? 'checked' : '';
+                const textStyle = item.done ? 'line-through text-slate-400' : 'text-slate-700';
+                html += `
+                    <label class="flex items-center space-x-3 p-1 hover:bg-slate-50 cursor-pointer">
+                        <input type="checkbox" ${checkedAttr} onchange="toggleCheck(${index})" 
+                               class="w-4 h-4 rounded border-2 border-slate-800 text-shinPink focus:ring-shinPink">
+                        <span class="text-xs font-bold ${textStyle}">${item.text}</span>
+                    </label>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <!-- 新增自訂清單項目 -->
+                    <div class="flex space-x-2 mt-3">
+                        <input type="text" id="new-item-text" placeholder="自訂要帶的物品..." class="flex-1 p-2 text-xs font-bold border-2 border-slate-800 rounded-lg">
+                        <button onclick="addChecklistItem()" class="bg-shinPink text-white px-4 rounded-lg font-black text-xs border-2 border-slate-800 shin-shadow-sm shin-btn-press">＋</button>
+                    </div>
+                </div>
+
+                <!-- 個人備忘錄（自動轉換網址功能） -->
+                <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                    <h3 class="font-black text-slate-800 mb-2 text-sm"><i class="fa-solid fa-pen-to-square text-shinYellow"></i> 個人隨手小筆記</h3>
+                    <textarea id="memo-area" oninput="saveMemo(this.value)" placeholder="在這裡寫下臨時找到的資訊或備忘錄...\n如果輸入網址(http...)會自動在下方轉換成按鈕喔！" 
+                              class="w-full h-32 p-2 text-xs font-bold border-2 border-slate-800 rounded-lg bg-shinBg resize-none focus:outline-none focus:ring-2 focus:ring-shinYellow">${memoText}</textarea>
+                    
+                    <div class="mt-2">
+                        <div class="text-[10px] font-black text-slate-400 mb-1">偵測到的快速連結網址：</div>
+                        <div id="memo-links" class="flex flex-wrap gap-1">
+                            <!-- 由 JS 動態解析網址並渲染按鈕 -->
+                        </div>
+                    </div>
+                </div>
+            `;
+            el.innerHTML = html;
+            parseMemoLinks();
+        }
+
+        // --- 清單邏輯群 ---
+        function toggleCheck(index) {
+            checklist[index].done = !checklist[index].done;
+            localStorage.setItem('shin_checklist', JSON.stringify(checklist));
+            renderLists(document.getElementById('main-content'));
+        }
+
+        function addChecklistItem() {
+            const input = document.getElementById('new-item-text');
+            const text = input.value.trim();
+            if (!text) return;
+            checklist.push({ text: text, done: false });
+            localStorage.setItem('shin_checklist', JSON.stringify(checklist));
+            input.value = "";
+            renderLists(document.getElementById('main-content'));
+        }
+
+        function saveMemo(val) {
+            memoText = val;
+            localStorage.setItem('shin_memo', memoText);
+            parseMemoLinks();
+        }
+
+        function parseMemoLinks() {
+            const linkContainer = document.getElementById('memo-links');
+            if (!linkContainer) return;
+            
+            // 正規表達式匹配網址
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            const matches = memoText.match(urlRegex);
+            
+            if (!matches) {
+                linkContainer.innerHTML = `<span class="text-[11px] text-slate-400 font-bold italic">目前無偵測到網址</span>`;
+                return;
+            }
+
+            let html = "";
+            matches.forEach((url, idx) => {
+                // 截短網址以便呈現
+                let displayUrl = url.length > 25 ? url.substring(0, 25) + "..." : url;
+                html += `
+                    <a href="${url}" target="_blank" class="text-[10px] bg-shinYellow font-black px-2 py-1 rounded border-2 border-slate-800 shin-shadow-sm flex items-center space-x-1 hover:bg-yellow-200">
+                        <i class="fa-solid fa-link"></i> <span>連結 ${idx+1} (${displayUrl})</span>
+                    </a>
+                `;
+            });
+            linkContainer.innerHTML = html;
+        }
+
+        // ==========================================
+        // 5. INFO (實用生活資訊分頁)
+        // ==========================================
+        function renderInfo(el) {
+            el.innerHTML = `
+                <div class="space-y-4">
+                    <!-- 天氣與外部實用工具 -->
+                    <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                        <h3 class="font-black text-slate-800 text-sm mb-2"><i class="fa-solid fa-cloud-sun text-shinLightBlue"></i> 日本即時天氣預報</h3>
+                        <a href="https://www.jma.go.jp/jma/index.html" target="_blank" 
+                           class="w-full bg-shinLightBlue text-slate-800 border-2 border-slate-800 font-black p-3 rounded-xl flex items-center justify-between shin-shadow-sm shin-btn-press">
+                            <span>☀️ 進入日本氣象廳 (JMA) 官網</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- 緊急聯絡通訊錄 -->
+                    <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                        <h3 class="font-black text-slate-800 text-sm mb-2"><i class="fa-solid fa-phone-volume text-shinRed"></i> 日本緊急求助熱線</h3>
+                        <div class="space-y-2 text-xs font-bold">
+                            <div class="flex justify-between items-center bg-slate-50 p-2 border border-slate-300 rounded-lg">
+                                <span class="text-slate-700">🚨 警察局（犯罪、交通事故）</span>
+                                <a href="tel:110" class="text-shinRed font-black bg-white px-3 py-1 border-2 border-slate-800 rounded-lg shin-shadow-sm">110</a>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-50 p-2 border border-slate-300 rounded-lg">
+                                <span class="text-slate-700">🚒 消防局 / 救護車（急救）</span>
+                                <a href="tel:119" class="text-shinRed font-black bg-white px-3 py-1 border-2 border-slate-800 rounded-lg shin-shadow-sm">119</a>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-50 p-2 border border-slate-300 rounded-lg">
+                                <span class="text-slate-700">駐日代表處 (TECO 緊急求助)</span>
+                                <a href="tel:+81-3-3280-7811" class="text-shinBlue font-black bg-white px-2 py-1 border-2 border-slate-800 rounded-lg text-[10px] shin-shadow-sm">+81-3-3280-7811</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 旅遊禁忌與注意事項 -->
+                    <div class="bg-white p-4 rounded-2xl shin-border shin-shadow">
+                        <h3 class="font-black text-slate-800 text-sm mb-2"><i class="fa-solid fa-triangle-exclamation text-shinYellow"></i> 安全出入境與旅遊禁忌</h3>
+                        <ul class="text-xs font-bold text-slate-600 space-y-2 list-disc pl-4 leading-relaxed">
+                            <li><strong class="text-shinRed">肉製品嚴禁入關：</strong>任何含肉類（豬肉、牛肉、雞肉）之伴手禮、泡麵、甚至含肉零食皆不可攜帶入境台灣或日本。</li>
+                            <li><strong>藥品數量限制：</strong>非處方藥（如：合利他命、止痛藥）每種最多 12 瓶，總數不得超過 36 瓶。</li>
+                            <li><strong>行動電源規定：</strong>行動電源、鋰電池必須放置於<strong class="text-shinRed">隨身行李</strong>攜帶，絕對不可放進行李箱托運！</li>
+                            <li><strong>日本步行禮儀：</strong>日本路上嚴禁邊走邊吃。若在路邊攤（如淺草老街）購買食物，請在店門口或指定區域吃完再移動。</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
